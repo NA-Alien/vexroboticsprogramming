@@ -1,4 +1,5 @@
 import * as snippets from './snippets.js';
+import { xDrive } from './xDrive.js';
 import { extraGuides } from './extraGuides.js';
 import { colorSorting } from './colorSorting.js';
 
@@ -231,7 +232,7 @@ const coreGuides = [
   }
 ];
 
-const readingOrder = ['getting-started', 'cpp-basics', 'sensors', 'simple-autonomous', 'mechanisms', 'color-sorting', 'pid', 'odometry', 'drive-to-point', 'wall-resets', 'debugging'];
-const bySlug = new Map([...coreGuides, ...extraGuides, colorSorting].map(guide => [guide.slug, guide]));
+const readingOrder = ['getting-started', 'cpp-basics', 'sensors', 'simple-autonomous', 'x-drive', 'mechanisms', 'color-sorting', 'pid', 'odometry', 'drive-to-point', 'wall-resets', 'debugging'];
+const bySlug = new Map([...coreGuides, ...extraGuides, colorSorting, xDrive].map(guide => [guide.slug, guide]));
 export const guides = readingOrder.map(slug => bySlug.get(slug));
 

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { guides } from './content/guides.js';
 import Header from './components/Header.jsx';
 import GuidePage, { SourceList } from './components/GuidePage.jsx';
@@ -53,6 +54,7 @@ export default function App({ initialRoute }) {
     </main>
     <footer className="site-footer"><a className="footer-brand" href="/">VEX Robotics Programming</a><a className="creator-credit" href="https://www.youtube.com/@CoderSponge" target="_blank" rel="noreferrer">Made by CoderSponge ↗</a><a href="/sources/">Sources & references</a><span className="footer-independent">Independent documentation</span></footer>
     <SearchDialog open={searchOpen} onClose={closeSearch}/>
+    {import.meta.env.PROD && <Analytics />}
   </>;
 }
 

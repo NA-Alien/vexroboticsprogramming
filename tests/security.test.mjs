@@ -5,7 +5,7 @@ import { securityHeaders } from '../config/security-headers.js';
 
 test('production policy restricts executable resources and framing without allowing inline code', () => {
   const policy = securityHeaders['Content-Security-Policy'];
-  for (const directive of ["default-src 'none'", "script-src 'self'", "style-src 'self'", "font-src 'self'", "connect-src 'none'", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'none'", "form-action 'none'"]) assert.ok(policy.split(';').map(s => s.trim()).includes(directive), directive);
+  for (const directive of ["default-src 'none'", "script-src 'self'", "style-src 'self'", "font-src 'self'", "connect-src 'self'", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'none'", "form-action 'none'"]) assert.ok(policy.split(';').map(s => s.trim()).includes(directive), directive);
   assert.ok(!policy.includes('unsafe-inline') && !policy.includes('unsafe-eval'));
   assert.equal(securityHeaders['X-Content-Type-Options'], 'nosniff');
   assert.equal(securityHeaders['X-Frame-Options'], 'DENY');

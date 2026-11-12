@@ -14,6 +14,25 @@ function Robot({ x, y, angle = 0 }) {
 export default function Diagram({ type = 'wall', compact = false }) {
   const id = useId().replaceAll(':', '');
   if (type === 'routine') return <RoutineDiagram/>;
+  if (type === 'x-drive') return <figure className="diagram">
+    <svg viewBox="0 0 520 330" role="img" aria-labelledby={`${id}-title`}>
+      <title id={`${id}-title`}>X-drive viewed from above. Positive wheel travel points forward-right at the front-left and back-right corners, and forward-left at the front-right and back-left corners.</title>
+      <rect x="153" y="68" width="214" height="206" rx="3" className="robot-body"/>
+      <path d="M260 60V22m-6 8 6-8 6 8" className="vector"/>
+      <text x="279" y="36">Front</text>
+      {[{ x: 160, y: 78, angle: 45 }, { x: 360, y: 78, angle: -45 }, { x: 160, y: 264, angle: -45 }, { x: 360, y: 264, angle: 45 }].map(({ x, y, angle }) => <g key={`${x}-${y}`} transform={`translate(${x} ${y}) rotate(${angle})`}>
+        <rect x="-9" y="-27" width="18" height="54" rx="3" className="robot-wheel"/>
+        <path d="M0 17V-17m-5 7 5-7 5 7" className="vector"/>
+      </g>)}
+      <text x="18" y="76">Front left</text><text x="18" y="98" className="diagram-note">Port 1</text>
+      <text x="407" y="76">Front right</text><text x="407" y="98" className="diagram-note">Port 2</text>
+      <text x="18" y="259">Back left</text><text x="18" y="281" className="diagram-note">Port 3</text>
+      <text x="407" y="259">Back right</text><text x="407" y="281" className="diagram-note">Port 4</text>
+      <text x="209" y="164">Robot front ↑</text><text x="209" y="188">Robot right →</text>
+      <text x="121" y="318" className="diagram-note">Arrows show positive wheel rolling directions.</text>
+    </svg>
+    <figcaption>Omni wheels at 45°, viewed from above. Set motor reversals to match these arrows before using the mixer.</figcaption>
+  </figure>;
   if (type === 'tracking') return <figure className="diagram">
     <svg viewBox="0 0 520 300" role="img" aria-labelledby={`${id}-title`}>
       <title id={`${id}-title`}>Top view of two tracking wheels: the forward tracker on Port 7 rolls front to back; the sideways tracker on Port 8 rolls left to right. The inertial sensor uses Port 5.</title>

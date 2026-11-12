@@ -1,6 +1,6 @@
 # VEX Robotics Programming
 
-Eleven written VEXcode C++ guides for VEX V5: VS Code setup, C++ basics, reading sensors, simple autonomous functions, intakes and arms, color sorting, PID, odometry, driving to coordinates, wall resets, and debugging. Includes local search, section links, copyable examples, SVG diagrams, cited references, and CoderSponge video links.
+Twelve written VEXcode C++ guides for VEX V5: VS Code setup, C++ basics, reading sensors, simple autonomous functions, X-drive programming, intakes and arms, color sorting, PID, odometry, driving to coordinates, wall resets, and debugging. Includes local search, section links, copyable examples, SVG diagrams, cited references, and CoderSponge video links.
 
 ## Run locally
 
@@ -43,7 +43,7 @@ The odometry guide includes tracker mounting and wiring, a top-view layout, whee
 
 Guides use normal URLs such as `/guides/odometry/`; sections use anchors such as `/guides/odometry/#offsets`. Every content page has its own generated HTML file, so guide text, code, links, and citations are present before JavaScript runs. React hydrates the page to enable search, copy controls, and the mobile guide menu. Existing links such as `/#/guides/odometry/offsets` convert to their new addresses in the browser.
 
-Upload the entire contents of `dist/`, including the guide directories and `404.html`. No backend, accounts, API keys, or environment variables are required. The build emits 14 content pages, a noindex 404 page, `sitemap.xml`, and `robots.txt`. Unknown URLs must return HTTP 404; do not add a catch-all rewrite to the homepage.
+Upload the entire contents of `dist/`, including the guide directories and `404.html`. No backend, accounts, API keys, or environment variables are required. The build emits 15 content pages, a noindex 404 page, `sitemap.xml`, and `robots.txt`. Unknown URLs must return HTTP 404; do not add a catch-all rewrite to the homepage.
 
 ## Robot examples
 
@@ -69,10 +69,19 @@ After publishing, verify domain ownership in Google Search Console and submit `h
 
 Sources: [Google JavaScript SEO](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [Google sitemap guidance](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap), [Vite static rendering](https://vite.dev/guide/ssr.html), [React hydration](https://react.dev/reference/react-dom/client/hydrateRoot).
 
-Both configurations include a restrictive Content Security Policy, framing restrictions, MIME-sniffing protection, referrer/privacy policies, and HTTPS transport policy. The CSP allows same-origin bundled scripts, CSS, fonts and images; it disallows inline scripts, eval, frames, forms, and browser network requests. Clipboard writing remains available for the explicit Copy code control. Local `npm run preview` serves the same policy for testing. Development mode omits that CSP because Vite needs its development tooling.
+Both configurations include a restrictive Content Security Policy, framing restrictions, MIME-sniffing protection, referrer/privacy policies, and HTTPS transport policy. The CSP allows same-origin bundled scripts, CSS, fonts and images; it allows same-origin analytics requests and disallows inline scripts, eval, frames, forms, and cross-origin browser requests. Clipboard writing remains available for the explicit Copy code control. Local `npm run preview` serves the same policy for testing. Development mode omits that CSP because Vite needs its development tooling.
 
-After deployment, confirm HTTPS and inspect the actual response headers. Test guide links, search, fonts, diagrams and Copy code against the deployed site. Provider-injected analytics or preview toolbars may be blocked by this intentionally restrictive policy. Add only narrowly scoped permissions if you intentionally introduce a feature that needs them.
+After deployment, confirm HTTPS and inspect the actual response headers. Test guide links, search, fonts, diagrams and Copy code against the deployed site. Unrelated third-party scripts or preview toolbars may be blocked by this intentionally restrictive policy. Add only narrowly scoped permissions if you intentionally introduce a feature that needs them.
 
 Keep deployment account access protected with MFA, keep dependencies updated, and keep credentials out of `public/`. This static site requires no application secrets; files placed in `public/` are published. `.env` and provider-local directories are ignored by Git, but ignoring a file is not a substitute for rotating a credential that was already committed.
 
 Security configuration references: [Vercel project configuration](https://vercel.com/docs/project-configuration), [Netlify custom headers](https://docs.netlify.com/manage/routing/headers/), [MDN Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy).
+
+
+## Visitor analytics
+
+Vercel Web Analytics is installed through @vercel/analytics/react in App.jsx and runs only in production builds. No analytics API key is needed. The security policy permits the same-origin script and collection requests.
+
+In the Vercel project dashboard, open Analytics and enable Web Analytics if it is not already enabled. Deploy this source, then visit a few pages and check the Analytics dashboard. Local preview does not provide Vercel's /_vercel/insights endpoints, so it cannot verify live collection. Content blockers can prevent tracking.
+
+Setup reference: https://vercel.com/docs/analytics/quickstart
