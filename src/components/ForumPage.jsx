@@ -5,6 +5,27 @@ import { ModerationQueue, ReportButton } from './ForumModeration.jsx';
 import './ForumPage.css';
 
 const uuid = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+const welcomeTitle = 'Welcome to the VEX Programming Forum!';
+
+export function ForumWelcome() {
+  return <div className="home-content forum-page">
+    <header className="catalog-heading forum-heading">
+      <a className="forum-back" href="/forum/">← Back to discussions</a>
+      <h1>{welcomeTitle}</h1>
+      <p>Whether you’re writing your first autonomous routine or tuning a robot for competition, you’re welcome here. Ask questions, share what worked, and help other teams learn.</p>
+    </header>
+    <section className="forum-card forum-welcome" aria-labelledby="forum-rules">
+      <h2 id="forum-rules">Forum rules</h2>
+      <ol>
+        <li>Be respectful. Explain your suggestions and give beginners room to learn.</li>
+        <li>Keep posts VEX-related.</li>
+        <li>Give enough context to help. Include your setup, what you expected, and what you already tried.</li>
+        <li>Keep personal information private. Leave out contact details, passwords, and API keys.</li>
+        <li>Skip spam and duplicate posts. Credit other people’s code and mark the answer that solved your question.</li>
+      </ol>
+    </section>
+  </div>;
+}
 
 function forumLink(query) {
   const params = new URLSearchParams(Object.entries(query).filter(([, value]) => value));
@@ -269,18 +290,10 @@ export default function ForumPage() {
               </label>
             </div>
           </div>
-          {!activeTopic && !status && page === 0 && <article className="forum-card forum-welcome">
-            <p className="forum-tag">Pinned · Site team</p>
-            <h3>Welcome to the VEX Programming Forum!</h3>
-            <p>Whether you’re writing your first autonomous routine or tuning a robot for competition, you’re welcome here. Ask questions, share what worked, and help other teams learn.</p>
-            <h4>Forum rules</h4>
-            <ol>
-              <li>Be respectful. Explain your suggestions and give beginners room to learn.</li>
-              <li>Keep posts VEX-related.</li>
-              <li>Give enough context to help. Include your setup, what you expected, and what you already tried.</li>
-              <li>Keep personal information private. Leave out contact details, passwords, and API keys.</li>
-              <li>Skip spam and duplicate posts. Credit other people’s code and mark the answer that solved your question.</li>
-            </ol>
+          {!activeTopic && !status && page === 0 && <article className="forum-card">
+            <p className="forum-tag">Pinned</p>
+            <h3><a href="/forum/welcome/">{welcomeTitle}</a></h3>
+            <p className="forum-summary">Read the forum rules before making your first post.</p>
           </article>}
           {threads?.length === 0 && <p className="forum-empty">No community discussions here yet.</p>}
           {threads?.map(item => <article className="forum-card" key={item.id}>

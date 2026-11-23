@@ -29,8 +29,8 @@
 .forum-card h3 a:hover { text-decoration: underline; }
 .forum-thread { margin: 12px 0 18px; border-top: 2px solid var(--accent); }
 .forum-thread h2 { margin-top: 5px; }
-.forum-welcome h4 { margin: 12px 0 4px; }
-.forum-welcome h3 + p { margin-top: 6px; }
+.forum-back { display: inline-block; margin-bottom: 8px; color: var(--accent); }
+.forum-welcome h2 { margin-bottom: 8px; }
 .forum-welcome ol { margin: 0; padding-inline-start: 22px; color: var(--body-text); }
 .forum-welcome li + li { margin-top: 4px; }
 .forum-empty { margin-top: 10px; color: var(--muted); }

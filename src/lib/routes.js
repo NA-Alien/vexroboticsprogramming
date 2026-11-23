@@ -4,6 +4,7 @@ export function parseRoute(pathname, hash = '') {
   if (path === '/guides') return { page: 'guides' };
   if (path === '/sources') return { page: 'sources' };
   if (path === '/forum') return { page: 'forum' };
+  if (path === '/forum/welcome') return { page: 'forum', welcome: true };
   const match = path.match(/^\/guides\/([a-z0-9-]+)$/);
   if (match) {
     const route = { page: 'guides', slug: match[1] };

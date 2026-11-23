@@ -57,7 +57,7 @@ test('the error page is excluded from indexing and has no canonical', async () =
 
 test('published pages point to valid sharing images and app icons', async () => {
   for (const [path, html] of documents) {
-    const card = path === '/forum/' ? 'forum' : 'site';
+    const card = path.startsWith('/forum/') ? 'forum' : 'site';
     assert.ok(html.includes(`<meta property="og:image" content="${siteOrigin}/brand/share-${card}.png">`), path);
     assert.ok(html.includes('<meta name="twitter:card" content="summary_large_image">'), path);
     assert.match(html, /rel="manifest" href="\/site\.webmanifest"/);
@@ -74,4 +74,14 @@ test('published pages point to valid sharing images and app icons', async () => 
   assert.equal(await dimensions('/brand/apple-touch-icon.png'), '180x180');
   assert.equal(await dimensions('/brand/share-site.png'), '1200x630');
   assert.equal(await dimensions('/brand/share-forum.png'), '1200x630');
+});
+
+test('the pinned welcome post links to a standalone page with the forum rules', () => {
+  const forum = documents.get('/forum/');
+  const welcome = documents.get('/forum/welcome/');
+  assert.match(forum, /<a href="\/forum\/welcome\/">Welcome to the VEX Programming Forum!<\/a>/);
+  assert.doesNotMatch(forum, /Pinned · Site team/);
+  assert.match(welcome, /<h2 id="forum-rules">Forum rules<\/h2>/);
+  assert.match(welcome, /Keep posts VEX-related/);
+  assert.match(welcome, /href="\/forum\/">← Back to discussions/);
 });

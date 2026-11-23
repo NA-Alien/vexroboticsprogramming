@@ -9,6 +9,7 @@ test('normal page URLs and section anchors have separate roles', () => {
   assert.deepEqual(parseRoute('/guides/'), { page: 'guides' });
   assert.deepEqual(parseRoute('/sources/'), { page: 'sources' });
   assert.deepEqual(parseRoute('/forum/'), { page: 'forum' });
+  assert.deepEqual(parseRoute('/forum/welcome/'), { page: 'forum', welcome: true });
   assert.deepEqual(parseRoute('/'), { page: 'home' });
   assert.deepEqual(parseRoute('/guides/odometry/extra/'), { page: 'not-found' });
 });
@@ -24,7 +25,7 @@ test('legacy hash routes migrate to local page and anchor URLs', () => {
 });
 
 test('every published page has unique metadata and an absolute canonical without fragments', () => {
-  assert.equal(pagePaths.length, guides.length + 4);
+  assert.equal(pagePaths.length, guides.length + 5);
   assert.ok(pagePaths.includes('/forum/'));
   assert.match(pageMetadata('/forum/').title, /Forum/);
   const pages = pagePaths.map(pageMetadata);
