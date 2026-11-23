@@ -10,7 +10,7 @@ function escapeHtml(value) {
 function renderHead(page) {
   const title = escapeHtml(page.title), description = escapeHtml(page.description);
   const canonical = page.canonical && escapeHtml(page.canonical);
-  const forum = page.canonical === siteOrigin + '/forum/';
+  const forum = page.canonical?.startsWith(siteOrigin + '/forum/');
   const image = `${siteOrigin}/brand/share-${forum ? 'forum' : 'site'}.png`;
   const imageAlt = forum ? 'VEX Programming Forum' : 'VEX Robotics Programming';
   return `<title>${title}</title>

@@ -43,7 +43,7 @@ The odometry guide includes tracker mounting and wiring, a top-view layout, whee
 
 Guides use normal URLs such as `/guides/odometry/`; sections use anchors such as `/guides/odometry/#offsets`. Every content page has its own generated HTML file, so guide text, code, links, and citations are present before JavaScript runs. React hydrates the page to enable search, copy controls, and the mobile guide menu. Existing links such as `/#/guides/odometry/offsets` convert to their new addresses in the browser.
 
-Upload the entire contents of `dist/`, including the guide directories and `404.html`. The guides are static. The build emits 16 content pages, a noindex 404 page, `sitemap.xml`, and `robots.txt`. Unknown URLs must return HTTP 404.
+Upload the entire contents of `dist/`, including the guide directories and `404.html`. The guides are static. The build emits 17 content pages, a noindex 404 page, `sitemap.xml`, and `robots.txt`. Unknown URLs must return HTTP 404.
 
 ## Robot examples
 

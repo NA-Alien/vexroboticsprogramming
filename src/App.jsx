@@ -5,7 +5,7 @@ import Header from './components/Header.jsx';
 import GuidePage, { SourceList } from './components/GuidePage.jsx';
 import SearchDialog from './components/SearchDialog.jsx';
 import Home from './components/Home.jsx';
-import ForumPage from './components/ForumPage.jsx';
+import ForumPage, { ForumWelcome } from './components/ForumPage.jsx';
 import { parseRoute } from './lib/routes.js';
 import { pageMetadata } from './lib/metadata.js';
 
@@ -51,7 +51,7 @@ export default function App({ initialRoute }) {
     <a className="skip-link" href="#main" onClick={e => { e.preventDefault(); document.getElementById('main').focus(); }}>Skip to content</a>
     <Header onSearch={() => setSearchOpen(true)} page={route.page}/>
     <main id="main" tabIndex="-1">
-      {route.page === 'forum' && <ForumPage/>}
+      {route.page === 'forum' && (route.welcome ? <ForumWelcome/> : <ForumPage/>)}
       {route.page !== 'forum' && (notFound ? <div className="not-found"><h1>Page not found</h1><p>This guide or section does not exist.</p><a className="button-primary" href="/guides/">View all guides →</a></div> : route.page === 'sources' ? <SourcesPage/> : guide ? <GuidePage key={guide.slug} guide={guide}/> : <Home index={route.page === 'guides'}/>)}
     </main>
     <footer className="site-footer"><a className="footer-brand" href="/">VEX Robotics Programming</a><a className="creator-credit" href="https://www.youtube.com/@CoderSponge" target="_blank" rel="noreferrer">Made by CoderSponge ↗</a><a href="/sources/">Sources & references</a><span className="footer-independent">Independent documentation</span></footer>
