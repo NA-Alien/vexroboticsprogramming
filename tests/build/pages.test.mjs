@@ -54,3 +54,24 @@ test('the error page is excluded from indexing and has no canonical', async () =
   assert.ok(html.includes('<meta name="robots" content="noindex, follow">'));
   assert.ok(!html.includes('rel="canonical"'));
 });
+
+test('published pages point to valid sharing images and app icons', async () => {
+  for (const [path, html] of documents) {
+    const card = path === '/forum/' ? 'forum' : 'site';
+    assert.ok(html.includes(`<meta property="og:image" content="${siteOrigin}/brand/share-${card}.png">`), path);
+    assert.ok(html.includes('<meta name="twitter:card" content="summary_large_image">'), path);
+    assert.match(html, /rel="manifest" href="\/site\.webmanifest"/);
+    assert.match(html, /rel="apple-touch-icon" sizes="180x180" href="\/brand\/apple-touch-icon\.png"/);
+  }
+  async function dimensions(path) {
+    const png = await readFile(`dist${path}`);
+    assert.equal(png.subarray(1, 4).toString(), 'PNG', path);
+    return `${png.readUInt32BE(16)}x${png.readUInt32BE(20)}`;
+  }
+  const manifest = JSON.parse(await readFile('dist/site.webmanifest', 'utf8'));
+  assert.equal(manifest.start_url, '/');
+  for (const icon of manifest.icons) assert.equal(await dimensions(icon.src), icon.sizes);
+  assert.equal(await dimensions('/brand/apple-touch-icon.png'), '180x180');
+  assert.equal(await dimensions('/brand/share-site.png'), '1200x630');
+  assert.equal(await dimensions('/brand/share-forum.png'), '1200x630');
+});

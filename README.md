@@ -59,13 +59,15 @@ This is an independent educational resource and is not affiliated with VEX Robot
 
 Without forum configuration, `/forum/` shows labeled, read-only examples. To enable sign-in and posting:
 
-1. On a new Supabase project with the Data API enabled, run `supabase/forum.sql` once in the SQL Editor. Then run `supabase/forum-safety.sql` once. For an existing forum database, apply only the safety script if it has yet to be applied.
-2. Enable email sign-in and update the Magic Link email template to include `{{ .Token }}` as the sign-in code. Configure custom SMTP before opening email sign-in to the public.
+1. On a new Supabase project with the Data API enabled, run `supabase/forum.sql`, `supabase/forum-safety.sql`, and `supabase/forum-moderation.sql` in the SQL Editor, in that order. On an existing database, run only the scripts that have yet to be applied.
+2. Enable email sign-in and update the Magic Link and Confirm sign up email templates to include `{{ .Token }}` as the sign-in code. Configure custom SMTP before opening email sign-in to the public.
 3. Set `VITE_SUPABASE_URL` to the project's HTTPS URL on `supabase.co` and `VITE_SUPABASE_PUBLISHABLE_KEY` to its `sb_publishable_` key in your local `.env.local` and hosting environment. Rebuild after changing these values. Only the publishable key belongs in the browser.
 4. After the moderator signs in once, set `forum_moderator` to `true` in that account's Auth app metadata using a trusted admin environment. Have them sign out and back in to load the new permissions.
 
 The forum exposes display names and post content publicly. Email addresses stay in Supabase Auth.
 The database enforces an eight-second cooldown between posts or replies and rejects email addresses and common private credential formats in submitted text. The filter catches common patterns and moderation remains available for other posts.
+
+The moderation migration blocks common profanity in new submissions and hides older matches for review. Signed-in members can flag a discussion or reply. Moderators can review flags, remove or restore posts, and permanently delete items after removal. Deleting a discussion also deletes its replies.
 
 For Vercel, import this project, select the Vite framework, and use the checked-in `vercel.json`. Install with `npm ci`, build with `npm run build`, and deploy `dist`. Add the forum environment variables above to enable live discussions.
 

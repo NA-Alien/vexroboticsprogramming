@@ -97,6 +97,8 @@
 .forum-sidebar .forum-card:last-child { border-bottom: 0; }
 .forum-tips ul { margin: 0; padding-inline-start: 18px; color: var(--secondary-text); font-size: 14px; }
 .forum-tips li + li { margin-top: 7px; }
+.forum-report form { max-width: 300px; margin: 8px 0; }
+.forum-account a { color: var(--accent); }
 
 .forum-page form, .forum-page label { display: grid; gap: 4px; }
 .forum-page form { gap: 12px; }

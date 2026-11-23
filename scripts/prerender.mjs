@@ -10,6 +10,9 @@ function escapeHtml(value) {
 function renderHead(page) {
   const title = escapeHtml(page.title), description = escapeHtml(page.description);
   const canonical = page.canonical && escapeHtml(page.canonical);
+  const forum = page.canonical === siteOrigin + '/forum/';
+  const image = `${siteOrigin}/brand/share-${forum ? 'forum' : 'site'}.png`;
+  const imageAlt = forum ? 'VEX Programming Forum' : 'VEX Robotics Programming';
   return `<title>${title}</title>
     <meta name="description" content="${description}">
     <meta name="robots" content="${page.robots}">
@@ -19,7 +22,15 @@ function renderHead(page) {
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VEX Robotics Programming">
     ${canonical ? `<meta property="og:url" content="${canonical}">` : ''}
-    <meta name="twitter:card" content="summary">`;
+    ${canonical ? `<meta property="og:image" content="${image}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${imageAlt}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${image}">
+    <meta name="twitter:image:alt" content="${imageAlt}">` : ''}`;
 }
 
 const template = await readFile(resolve('dist/index.html'), 'utf8');

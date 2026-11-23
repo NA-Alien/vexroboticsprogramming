@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { guides } from '../content/guides.js';
 import { exampleThreads } from '../content/forumExamples.js';
+import { ModerationQueue, ReportButton } from './ForumModeration.jsx';
 import './ForumPage.css';
 
 const uuid = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
@@ -11,6 +12,9 @@ function forumLink(query) {
 }
 
 function postError(error) {
+  if (error?.message === 'forum_profanity') {
+    return 'Remove profanity from the post or reply before publishing.';
+  }
   if (error?.message === 'forum_private_information') {
     return 'Remove email addresses and private credentials before posting.';
   }
@@ -44,7 +48,7 @@ export default function ForumPage() {
   const codeInput = useRef(null);
   const emailInput = useRef(null);
   const client = backend?.forumClient;
-  const { guideSlug, threadId, page = 0, status } = locationState ?? {};
+  const { guideSlug, threadId, page = 0, status, reports } = locationState ?? {};
   const guide = guides.find(item => item.slug === guideSlug);
   const activeTopic = guide?.slug;
   const user = session?.user;
@@ -56,6 +60,7 @@ export default function ForumPage() {
     const requestedStatus = params.get('status');
     setLocationState({
       guideSlug: params.get('guide'), threadId: params.get('thread'),
+      reports: params.get('moderation') === '1',
       status: ['solved', 'unsolved'].includes(requestedStatus) ? requestedStatus : null,
       page: Number.isInteger(requestedPage) && requestedPage >= 0 ? Math.min(requestedPage, 10_000) : 0,
     });
@@ -76,7 +81,7 @@ export default function ForumPage() {
   }, []);
 
   useEffect(() => {
-    if (!client || !locationState) return;
+    if (!client || !locationState || reports) return;
     if (threadId && !uuid.test(threadId)) {
       setDiscussion({ thread: null });
       return;
@@ -86,7 +91,7 @@ export default function ForumPage() {
       .then(data => { if (active) setDiscussion(data); })
       .catch(() => { if (active) setError('Could not load discussions. Refresh the page to retry.'); });
     return () => { active = false; };
-  }, [backend, client, locationState, threadId, activeTopic, page, status, revision, user?.id, moderator]);
+  }, [backend, client, locationState, threadId, activeTopic, page, status, reports, revision, user?.id, moderator]);
 
   useEffect(() => {
     if (codeSent) codeInput.current?.focus();
@@ -167,6 +172,18 @@ export default function ForumPage() {
     }, 'Could not update this discussion. Refresh the page and try again.');
   }
 
+  function deletePost(table, id) {
+    const discussion = table === 'forum_threads';
+    const message = discussion ? 'Permanently delete this discussion and all of its replies?' : 'Permanently delete this reply?';
+    if (!window.confirm(message)) return;
+    run(async () => {
+      const { error: deleteError } = await client.from(table).delete().eq('id', id).select('id').single();
+      if (deleteError) throw deleteError;
+      if (discussion) window.location.assign('/forum/');
+      else setRevision(value => value + 1);
+    }, 'Could not delete this item. Refresh the page and try again.');
+  }
+
   const preview = backend && !backend.forumConfigured;
   const thread = preview ? exampleThreads.find(item => item.id === threadId) : discussion?.thread;
   const threads = preview ? exampleThreads.filter(item =>
@@ -174,7 +191,7 @@ export default function ForumPage() {
   ) : discussion?.threads;
   const replies = preview ? thread?.replies : discussion?.replies;
   const threadGuide = guides.find(item => item.slug === thread?.guide_slug);
-  const showComposer = user && (!threadId || (thread && !thread.locked && !thread.hidden));
+  const showComposer = user && !reports && (!threadId || (thread && !thread.locked && !thread.hidden));
   const pagination = { guide: activeTopic, thread: threadId, status };
 
   return <div className="home-content forum-page">
@@ -187,6 +204,7 @@ export default function ForumPage() {
     {error && <p className="forum-status" role="alert">{error}</p>}
     {notice && <p className="forum-status" role="status">{notice}</p>}
     {user && <div className="forum-account">
+      {moderator && <a href="/forum/?moderation=1">Flagged posts</a>}
       <button type="button" className="forum-link-button" disabled={sending} onClick={() => run(async () => {
         const { error: authError } = await client.auth.signOut();
         if (authError) throw authError;
@@ -196,6 +214,7 @@ export default function ForumPage() {
     </div>}
     <div className="catalog-layout forum-layout">
       <section aria-label="Discussions">
+        {reports ? (moderator ? <ModerationQueue client={client}/> : <p>Sign in with a moderator account to view flags.</p>) : <>
         {!preview && !discussion && !error && <p role="status">Loading discussions…</p>}
         {threadId && (preview || discussion) && <>
           <a href={forumLink({ guide: threadGuide?.slug })}>← Back to discussions</a>
@@ -208,8 +227,10 @@ export default function ForumPage() {
               <PostContent post={thread}/>
               {moderator && <div className="forum-actions">
                 <button type="button" disabled={sending} onClick={() => updatePost('forum_threads', thread.id, { locked: !thread.locked })}>{thread.locked ? 'Unlock' : 'Lock thread'}</button>
-                <button type="button" disabled={sending} onClick={() => updatePost('forum_threads', thread.id, { hidden: !thread.hidden })}>{thread.hidden ? 'Restore thread' : 'Hide thread'}</button>
+                <button type="button" disabled={sending} onClick={() => updatePost('forum_threads', thread.id, { hidden: !thread.hidden })}>{thread.hidden ? 'Restore discussion' : 'Remove from forum'}</button>
+                {thread.hidden && <button type="button" disabled={sending} onClick={() => deletePost('forum_threads', thread.id)}>Delete permanently</button>}
               </div>}
+              {user && !thread.hidden && <ReportButton key={user.id} client={client} threadId={thread.id}/>}
             </article>
             <h2>Replies</h2>
             {replies?.length === 0 && <p>No replies yet.</p>}
@@ -222,8 +243,10 @@ export default function ForumPage() {
                   <button type="button" disabled={sending} onClick={() => updatePost('forum_threads', thread.id, { solution_id: thread.solution_id === reply.id ? null : reply.id })}>
                     {thread.solution_id === reply.id ? 'Remove solution' : 'Mark as solution'}
                   </button>}
-                {moderator && <button type="button" disabled={sending} onClick={() => updatePost('forum_replies', reply.id, { hidden: !reply.hidden })}>{reply.hidden ? 'Restore reply' : 'Hide reply'}</button>}
+                {moderator && <button type="button" disabled={sending} onClick={() => updatePost('forum_replies', reply.id, { hidden: !reply.hidden })}>{reply.hidden ? 'Restore reply' : 'Remove reply'}</button>}
+                {moderator && reply.hidden && <button type="button" disabled={sending} onClick={() => deletePost('forum_replies', reply.id)}>Delete permanently</button>}
               </div>
+              {user && !thread.hidden && !reply.hidden && <ReportButton key={user.id} client={client} threadId={thread.id} replyId={reply.id}/>}
             </article>)}
           </>}
         </>}
@@ -276,6 +299,7 @@ export default function ForumPage() {
           {page > 0 && <a href={forumLink({ ...pagination, page: page - 1 })}>← Previous</a>}
           {discussion?.more && <a href={forumLink({ ...pagination, page: page + 1 })}>Next →</a>}
         </nav>}
+        </>}
       </section>
       <aside className="reference-tools forum-sidebar">
         {client && !user && <section className="forum-auth" aria-labelledby="forum-auth-title" aria-busy={sending}>

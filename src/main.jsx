@@ -4,6 +4,7 @@ import '@fontsource/source-sans-3/latin-400.css';
 import '@fontsource/source-sans-3/latin-600.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
 import App from './App.jsx';
+import PageErrorBoundary from './components/PageErrorBoundary.jsx';
 import './styles.css';
 import { legacyDestination } from './lib/routes.js';
 
@@ -12,7 +13,7 @@ if (legacyUrl) {
   location.replace(legacyUrl);
 } else {
   const root = document.getElementById('root');
-  const app = <React.StrictMode><App /></React.StrictMode>;
+  const app = <React.StrictMode><PageErrorBoundary><App /></PageErrorBoundary></React.StrictMode>;
   if (root.childElementCount) hydrateRoot(root, app);
   else createRoot(root).render(app);
 }

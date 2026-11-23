@@ -7,6 +7,7 @@ test('production policy restricts executable resources and framing without allow
   const policy = securityHeaders['Content-Security-Policy'];
   for (const directive of ["default-src 'none'", "script-src 'self'", "style-src 'self'", "font-src 'self'", "connect-src 'self' https://*.supabase.co", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'none'", "form-action 'none'"]) assert.ok(policy.split(';').map(s => s.trim()).includes(directive), directive);
   assert.ok(!policy.includes('unsafe-inline') && !policy.includes('unsafe-eval'));
+  assert.ok(policy.split(';').map(directive => directive.trim()).includes("manifest-src 'self'"));
   assert.equal(securityHeaders['X-Content-Type-Options'], 'nosniff');
   assert.equal(securityHeaders['X-Frame-Options'], 'DENY');
   assert.match(securityHeaders['Strict-Transport-Security'], /max-age=31536000/);
