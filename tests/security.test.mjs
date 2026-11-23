@@ -5,7 +5,7 @@ import { securityHeaders } from '../config/security-headers.js';
 
 test('production policy restricts executable resources and framing without allowing inline code', () => {
   const policy = securityHeaders['Content-Security-Policy'];
-  for (const directive of ["default-src 'none'", "script-src 'self'", "style-src 'self'", "font-src 'self'", "connect-src 'self'", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'none'", "form-action 'none'"]) assert.ok(policy.split(';').map(s => s.trim()).includes(directive), directive);
+  for (const directive of ["default-src 'none'", "script-src 'self'", "style-src 'self'", "font-src 'self'", "connect-src 'self' https://*.supabase.co", "object-src 'none'", "frame-ancestors 'none'", "base-uri 'none'", "form-action 'none'"]) assert.ok(policy.split(';').map(s => s.trim()).includes(directive), directive);
   assert.ok(!policy.includes('unsafe-inline') && !policy.includes('unsafe-eval'));
   assert.equal(securityHeaders['X-Content-Type-Options'], 'nosniff');
   assert.equal(securityHeaders['X-Frame-Options'], 'DENY');
@@ -20,7 +20,7 @@ test('Vercel and portable static-host configurations deliver the tested header p
   assert.equal(vercel.installCommand, 'npm ci');
   assert.equal(vercel.headers[0].source, '/(.*)');
   assert.deepEqual(Object.fromEntries(vercel.headers[0].headers.map(h => [h.key, h.value])), securityHeaders);
-  const portable = await readFile(new URL('../public/_headers', import.meta.url), 'utf8');
+  const portable = (await readFile(new URL('../public/_headers', import.meta.url), 'utf8')).replaceAll('\r\n', '\n');
   assert.ok(portable.startsWith('/*\n'));
   for (const [key, value] of Object.entries(securityHeaders)) assert.ok(portable.includes(`  ${key}: ${value}\n`), key);
 });

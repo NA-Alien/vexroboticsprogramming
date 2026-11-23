@@ -123,6 +123,16 @@ const coreGuides = [
         'Only add kI if the robot consistently stops short after the P/D behavior is reasonable. Keep the integral clamp and conditional integration.',
         'Repeat short and long turns in both directions. Test with the robot’s normal mechanisms and battery conditions.'
       ], paragraphs: ['Record the target, final error, settling time, and whether the timeout was reached for each trial. Change one setting at a time. LemLib’s tuning guide is a useful comparison, but its gain values and exit-condition implementation are not the same as this function.'], sources: ['lemPid'] },
+      { id: 'worked-turn', title: 'Read a turn trace', paragraphs: [
+        'Suppose the target is 90°. Record elapsed time, measured heading, signed error, and commanded output together. These illustrative readings show two different failures. Start each trial from the same heading, on the same surface, and change one setting between trials.',
+        'In trial A the error crosses zero, becomes negative, then becomes positive again. The robot passed the target and corrected back. Check whether it is still moving quickly on the first crossing. If the direction and units are right, try less P or more damping and compare peak overshoot and settling time.',
+        'Trial B stays below the target. Look at the commanded output once the heading stops changing. A small nonzero command can be below the drivetrain’s breakaway effort. Repeat the turn in both directions to check for mechanical asymmetry, then decide whether a small integral term is appropriate. A timeout should be recorded as a failed trial even when the final heading looks close.'
+      ], table: { headings: ['Time', 'Trial A heading / error', 'Trial B heading / error'], rows: [
+        ['0 ms', '0° / +90°', '0° / +90°'],
+        ['450 ms', '98° / −8°', '80° / +10°'],
+        ['700 ms', '87° / +3°', '85° / +5°'],
+        ['1,100 ms', '90° / 0°', '85° / +5°']
+      ] } },
       { id: 'symptoms', title: 'Common problems', table: { headings: ['Observation', 'Check first'], rows: [
         ['Turns away from the target', 'Motor direction and heading sign.'],
         ['Jumps near 0°', 'Wrap the angular error and measured delta.'],
@@ -185,6 +195,11 @@ const coreGuides = [
         'Start with this stationary tracking test. It stops the motors, initializes a known pose, and prints updates for ten seconds while you move the robot by hand. Only this autonomous loop writes pose.',
         'To integrate motion helpers, call updateOdometry() inside each drive/turn loop. Do not also run a second odometry task. If you later introduce tasks, give pose a single owner and route reset requests through it, or protect all shared accesses with an appropriate synchronization mechanism. Declaring pose volatile is not a synchronization strategy.'
       ], code: snippets.odomLoop, codeLabel: 'main.cpp · replace autonomous() for tracking test', sources: ['prosTasks'] },
+      { id: 'isolate-drift', title: 'Separate scale, sign, and offset errors', paragraphs: [
+        'Start with raw sensor readings before changing the pose math. Zero the pose in a marked starting position. Push the robot forward by a measured 48 inches without turning, then compare the signed forward tracker distance with the tape measure. A reading around −48 inches points to a reversed sign. A reading around +45 inches points to a scale error or slipping tracker. Repeat at a second distance before changing the conversion.',
+        'Next, rotate the robot about its center and compare raw tracker movement with the reported pose. A tracker mounted away from the center should move during rotation. The offset correction is what should bring the estimated translation close to zero. As an example, a wheel with a 2-inch perpendicular offset travels about 3.14 inches during a 90° turn, with sign determined by its orientation and the turn direction.',
+        'Repeat the turn in both directions, returning to the starting marks each time. A consistent translation error that reverses with the turn suggests checking the offset magnitude and sign. If the raw heading itself is wrong, check its direction and degree-to-radian conversion first. If repeats disagree, inspect wheel contact and mount play before changing the math.'
+      ] },
       { id: 'validation', title: 'Check for drift', steps: [
         'Push straight along a measured line. Check direction first, then distance scale.',
         'Push sideways. Confirm the side tracker increases for robot-left motion.',

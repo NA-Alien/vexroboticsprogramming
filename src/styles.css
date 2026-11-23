@@ -45,16 +45,18 @@ kbd { font: 11px var(--mono); border: 1px solid var(--line); padding: 2px 5px; b
 .skip-link:focus { top: 8px; }
 
 /* Site navigation */
-.site-header { position: sticky; top: 0; z-index: 20; background: var(--paper); border-bottom: 1px solid var(--line); }
-.header-inner { max-width: 1200px; padding: 0 36px; margin: auto; display: flex; align-items: center; gap: 32px; height: 68px; }
-.wordmark { font-size: 19px; font-weight: 600; text-decoration: none; letter-spacing: -.2px; white-space: nowrap; }
-.brand-vex { font-weight: 600; }
-.search-trigger { display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 44px; min-height: 44px; border: 0; background: transparent; color: var(--muted); font-size: 14px; padding: 8px 0; margin-left: auto; }
-.search-trigger:hover { color: var(--accent); }
+.site-header { position: sticky; top: 0; z-index: 20; background: var(--paper); border-top: 3px solid var(--accent); border-bottom: 1px solid var(--line); }
+.site-header a, .site-header button { transition: none; }
+.header-inner { max-width: 1200px; padding: 0 36px; margin: auto; display: grid; grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr); align-items: center; height: 68px; }
+.site-logo { display: grid; place-items: center; width: 44px; height: 44px; }
+.site-logo img { display: block; box-shadow: 0 2px 5px #252a2926; border-radius: 5px; }
+.search-trigger { display: flex; align-items: center; justify-content: center; justify-self: start; gap: 8px; min-width: 44px; min-height: 40px; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--muted); font-size: 14px; padding: 6px 10px; }
+.search-trigger:hover { color: var(--accent); background: var(--hover); border-color: var(--strong-line); }
 .search-trigger kbd { margin-left: 9px; }
-.top-nav { display: flex; gap: 26px; align-items: center; font-size: 14px; }
-.top-nav a { min-height: 44px; display: flex; align-items: center; text-decoration: none; }
-.top-nav a:hover, .top-nav a[aria-current] { color: var(--accent); text-decoration: underline; }
+.top-nav { display: flex; justify-self: end; gap: 6px; align-items: center; font-size: 14px; }
+.top-nav a { min-height: 40px; display: flex; align-items: center; padding-inline: 10px; border-radius: 4px; text-decoration: none; }
+.top-nav a:hover { color: var(--accent); background: var(--hover); }
+.top-nav a[aria-current] { color: var(--accent); background: var(--inset); font-weight: 600; }
 .site-footer { max-width: 1128px; margin: 16px auto 0; border-top: 1px solid var(--line); padding: 21px 0 26px; display: flex; gap: 24px; align-items: center; color: var(--muted); font-size: 12px; }
 .footer-brand { color: var(--ink); font-weight: 600; text-decoration: none; }
 .site-footer > a:nth-of-type(3) { margin-left: auto; }
@@ -307,11 +309,9 @@ td:first-child { min-width: 125px; }
   .home-start { grid-template-columns: minmax(0,1fr) 240px; column-gap: 22px; }
   .home-start > p { font-size: 17px; }
   .season-links { flex-wrap: wrap; gap: 9px 16px; }
-  .header-inner { padding: 0 24px; gap: 24px; }
-  .wordmark { font-size: 18px; }
+  .header-inner { padding: 0 24px; }
   .search-trigger > span, .search-trigger kbd { display: none; }
   .search-trigger { padding: 10px; }
-  .top-nav { gap: 20px; }
   .home-content { padding: 0 24px; }
   .catalog-heading h1 { font-size: 32px; }
   .catalog-layout { grid-template-columns: minmax(0,1fr); gap: 3px; }
@@ -339,9 +339,9 @@ td:first-child { min-width: 125px; }
   .season-heading h2 { font-size: 23px; }
   .season-heading > span { margin: 0; font-size: 12px; }
   .home-walkthroughs > a { line-height: 1.5; }
-  .header-inner { height: 62px; padding: 0 18px; gap: 13px; }
-  .wordmark { white-space: normal; min-width: 0; max-width: 200px; font-size: 17px; line-height: 1.15; }
-  .top-nav { gap: 14px; font-size: 13px; flex-shrink: 0; }
+  .header-inner { height: 62px; padding: 0 18px; }
+  .top-nav { gap: 2px; font-size: 13px; }
+  .top-nav a { padding-inline: 5px; }
   .search-trigger { padding: 8px 0; }
   .home-content { padding: 0 21px; }
   .catalog-heading { padding: 26px 0 20px; }
@@ -404,9 +404,9 @@ td:first-child { min-width: 125px; }
   .search-help { padding: 10px 16px; gap: 14px; font-size: 11px; }
 }
 @media (max-width: 360px) {
-  .header-inner { padding: 0 14px; gap: 10px; }
-  .wordmark { font-size: 16px; max-width: 150px; }
-  .top-nav { gap: 10px; font-size: 12px; }
+  .header-inner { padding: 0 8px; }
+  .top-nav { gap: 1px; font-size: 12px; }
+  .top-nav a { padding-inline: 3px; }
   .function-reference ul { grid-template-columns: 1fr; }
   .function-reference code { font-size: 11px; }
 }

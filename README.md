@@ -43,7 +43,7 @@ The odometry guide includes tracker mounting and wiring, a top-view layout, whee
 
 Guides use normal URLs such as `/guides/odometry/`; sections use anchors such as `/guides/odometry/#offsets`. Every content page has its own generated HTML file, so guide text, code, links, and citations are present before JavaScript runs. React hydrates the page to enable search, copy controls, and the mobile guide menu. Existing links such as `/#/guides/odometry/offsets` convert to their new addresses in the browser.
 
-Upload the entire contents of `dist/`, including the guide directories and `404.html`. No backend, accounts, API keys, or environment variables are required. The build emits 15 content pages, a noindex 404 page, `sitemap.xml`, and `robots.txt`. Unknown URLs must return HTTP 404; do not add a catch-all rewrite to the homepage.
+Upload the entire contents of `dist/`, including the guide directories and `404.html`. The guides are static. The build emits 16 content pages, a noindex 404 page, `sitemap.xml`, and `robots.txt`. Unknown URLs must return HTTP 404.
 
 ## Robot examples
 
@@ -55,7 +55,19 @@ This is an independent educational resource and is not affiliated with VEX Robot
 
 ## Deploy
 
-For Vercel, import this project, select the Vite framework, and use the checked-in `vercel.json`: install `npm ci`, build `npm run build`, output `dist`. No environment variables are needed. Deploy the production build, not the Vite development or preview server.
+### Connect the community forum
+
+Without forum configuration, `/forum/` shows labeled, read-only examples. To enable sign-in and posting:
+
+1. On a new Supabase project with the Data API enabled, run `supabase/forum.sql` once in the SQL Editor. Then run `supabase/forum-safety.sql` once. For an existing forum database, apply only the safety script if it has yet to be applied.
+2. Enable email sign-in and update the Magic Link email template to include `{{ .Token }}` as the sign-in code. Configure custom SMTP before opening email sign-in to the public.
+3. Set `VITE_SUPABASE_URL` to the project's HTTPS URL on `supabase.co` and `VITE_SUPABASE_PUBLISHABLE_KEY` to its `sb_publishable_` key in your local `.env.local` and hosting environment. Rebuild after changing these values. Only the publishable key belongs in the browser.
+4. After the moderator signs in once, set `forum_moderator` to `true` in that account's Auth app metadata using a trusted admin environment. Have them sign out and back in to load the new permissions.
+
+The forum exposes display names and post content publicly. Email addresses stay in Supabase Auth.
+The database enforces an eight-second cooldown between posts or replies and rejects email addresses and common private credential formats in submitted text. The filter catches common patterns and moderation remains available for other posts.
+
+For Vercel, import this project, select the Vite framework, and use the checked-in `vercel.json`. Install with `npm ci`, build with `npm run build`, and deploy `dist`. Add the forum environment variables above to enable live discussions.
 
 For a static host supporting `_headers` (such as Netlify), build and upload `dist/`; `public/_headers` is copied into that directory. Other hosts must configure equivalent response headers themselves. A plain file upload to a host that ignores `_headers` will not apply those protections.
 
@@ -69,7 +81,7 @@ After publishing, verify domain ownership in Google Search Console and submit `h
 
 Sources: [Google JavaScript SEO](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [Google sitemap guidance](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap), [Vite static rendering](https://vite.dev/guide/ssr.html), [React hydration](https://react.dev/reference/react-dom/client/hydrateRoot).
 
-Both configurations include a restrictive Content Security Policy, framing restrictions, MIME-sniffing protection, referrer/privacy policies, and HTTPS transport policy. The CSP allows same-origin bundled scripts, CSS, fonts and images; it allows same-origin analytics requests and disallows inline scripts, eval, frames, forms, and cross-origin browser requests. Clipboard writing remains available for the explicit Copy code control. Local `npm run preview` serves the same policy for testing. Development mode omits that CSP because Vite needs its development tooling.
+Both configurations include a restrictive Content Security Policy, framing restrictions, MIME-sniffing protection, referrer/privacy policies, and HTTPS transport policy. The CSP allows same-origin resources and analytics requests, plus HTTPS API requests to Supabase project domains for the forum. Clipboard writing remains available for the explicit Copy code control. Local `npm run preview` serves the same policy for testing. Development mode omits that CSP because Vite needs its development tooling.
 
 After deployment, confirm HTTPS and inspect the actual response headers. Test guide links, search, fonts, diagrams and Copy code against the deployed site. Unrelated third-party scripts or preview toolbars may be blocked by this intentionally restrictive policy. Add only narrowly scoped permissions if you intentionally introduce a feature that needs them.
 

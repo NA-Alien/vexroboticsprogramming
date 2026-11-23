@@ -2,7 +2,7 @@ import { guides } from '../content/guides.js';
 import { parseRoute } from './routes.js';
 
 export const siteOrigin = 'https://vexroboticsprogramming.com';
-export const pagePaths = ['/', '/guides/', '/sources/', ...guides.map(guide => `/guides/${guide.slug}/`)];
+export const pagePaths = ['/', '/guides/', '/sources/', '/forum/', ...guides.map(guide => `/guides/${guide.slug}/`)];
 
 export function pageMetadata(pathname) {
   const route = parseRoute(pathname);
@@ -13,10 +13,12 @@ export function pageMetadata(pathname) {
   const title = guide ? `${guide.title} in VEXcode C++ | VEX Robotics Programming`
     : route.page === 'guides' ? 'VEXcode C++ Programming Guides | VEX Robotics Programming'
     : route.page === 'sources' ? 'Sources & References | VEX Robotics Programming'
+    : route.page === 'forum' ? 'Community Forum | VEX Robotics Programming'
     : 'VEX Robotics Programming | VEXcode C++ Tutorials';
   const description = guide ? `${guide.description} VEXcode C++ examples, diagrams, and cited references.`
     : route.page === 'guides' ? 'Browse VEX V5 programming guides covering VS Code setup, sensors, autonomous movement, color sorting, PID, odometry, and wall resets.'
     : route.page === 'sources' ? 'VEX, PROS, Purdue SIGBots, and LemLib documentation referenced in these independent VEXcode C++ programming guides.'
+    : route.page === 'forum' ? 'Ask VEX V5 programming questions, share C++ snippets, and troubleshoot autonomous routines with other teams.'
     : 'Learn VEX V5 robotics programming with VEXcode C++ tutorials: VS Code setup, autonomous functions, PID, tracking-wheel odometry, color sorting, and wall resets.';
   return { title, description, canonical: siteOrigin + path, robots: 'index, follow' };
 }

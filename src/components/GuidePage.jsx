@@ -32,6 +32,7 @@ export default function GuidePage({ guide }) {
     <article className="guide-article">
       <div className="breadcrumb"><a href="/guides/">Guides</a><span aria-hidden="true">/</span><span>{guide.shortTitle}</span></div>
       <header className="article-heading"><h1>{guide.title}</h1><p>{guide.description}</p></header>
+      <a className="guide-discussion" href={`/forum/?guide=${guide.slug}`}>Discuss this guide in the forum →</a>
       <div className="prerequisites"><strong>Before you start</strong><p>{guide.prerequisite} {!guide.standalone && <a href="/guides/getting-started/#configuration">Shared configuration ↗</a>}</p></div>
       <details className="mobile-toc" ref={mobileContents}><summary>On this page<span className="current-section">{guide.sections.find(section => section.id === activeSection)?.title || 'Sources'}</span></summary><nav aria-label="Article sections" onClick={event => { if (event.target.closest('a')) mobileContents.current.open = false; }}>{guide.sections.map(section => <a key={section.id} href={`/guides/${guide.slug}/#${section.id}`} aria-current={activeSection === section.id ? 'location' : undefined}>{section.title}</a>)}<a href={`/guides/${guide.slug}/#references`} aria-current={activeSection === 'references' ? 'location' : undefined}>Sources</a></nav></details>
       {guide.sections.map(section => <section className="article-section" id={section.id} key={section.id} tabIndex="-1" aria-labelledby={`heading-${section.id}`}>

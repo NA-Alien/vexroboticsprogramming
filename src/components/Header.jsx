@@ -5,10 +5,11 @@ export function SearchIcon() {
 export default function Header({ onSearch, page }) {
   return <header className="site-header">
     <div className="header-inner">
-      <a href="/" className="wordmark" aria-label="VEX Robotics Programming home"><span className="brand-vex">VEX</span> Robotics Programming</a>
       <button className="search-trigger" onClick={onSearch} aria-label="Search documentation" aria-keyshortcuts="/ Control+k Meta+k"><SearchIcon/><span>Search</span><kbd>/</kbd></button>
+      <a href="/" className="site-logo" aria-label="VEX Robotics Programming home"><img src="/favicon.svg" alt="" width="34" height="34"/></a>
       <nav className="top-nav" aria-label="Main navigation">
         <a href="/guides/" aria-current={page === 'guides' ? 'page' : undefined}>Guides</a>
+        <a href="/forum/" aria-current={page === 'forum' ? 'page' : undefined}>Forum</a>
         <a href="/sources/" aria-current={page === 'sources' ? 'page' : undefined}>Sources</a>
       </nav>
     </div>
