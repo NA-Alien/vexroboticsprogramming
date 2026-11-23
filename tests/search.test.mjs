@@ -16,6 +16,12 @@ test('search matches a guide title and returns a usable destination', () => {
   assert.equal(searchGuides('PID', fixture)[0].guide.slug, 'pid');
 });
 
+test('search opens Motion chaining under Driving to coordinates', () => {
+  const [result] = searchGuides('motion chaining', guides);
+  assert.equal(result.guide.slug, 'drive-to-point');
+  assert.equal(result.section.id, 'motion-chaining');
+});
+
 test('an exact guide title opens the beginning before related later sections', () => {
   for (const guide of guides) {
     const [first] = searchGuides(`  ${guide.title.toUpperCase().replaceAll(' ', '  ')}  `, guides);
