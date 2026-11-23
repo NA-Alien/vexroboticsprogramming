@@ -7,7 +7,7 @@ function HomeIntroduction() {
   return <div className="home-introduction">
     <div className="home-start">
       <h1>VEX Robotics Programming</h1>
-      <p>VEXcode C++ guides, from your first project to autonomous navigation.</p>
+      <p>Independent VEX V5 programming guides by CoderSponge. Learn VEXcode C++ from your first project to autonomous navigation.</p>
       <div className="home-walkthroughs">
         <h2>Walkthroughs by <a href="https://www.youtube.com/@CoderSponge" target="_blank" rel="noreferrer">CoderSponge</a></h2>
         <a href="https://www.youtube.com/watch?v=MrLuhMFzio8" target="_blank" rel="noreferrer">VS Code setup <span aria-hidden="true">↗</span></a>
